@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            margin: 0;
+            /* 防止滚动条出现 */
+            overflow: hidden;
+        }
+        
+        canvas {
+            background: #000;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="canvas"></canvas>
+    <!-- 默认宽高300*150 -->
+</body>
+<script>
+    const canvas = document.getElementById('canvas');
+    const context = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let arr = []; //储存所画的雪花
+
+    canvas.addEventListener("mousemove", (e) => {
+
+        let circle = new Circle(e.clientX, e.clientY);
+        circle.draw();
+        // 不要存太多 烧cpu
+        if (arr.length > 180) {
+            return;
+        } else {
+            arr.push(circle);
+        }
+    })
+
+    //当前位置 随机位置
+    function Circle(x, y) {
+        this.x = x;
+        this.y = y;
+        this.vx = (Math.random() - 0.5) * 3;
+        this.vy = (Math.random() - 0.5) * 3;
+        this.opacity = 1;
+    }
+    // Circle();
+    Circle.prototype = {
+            // 画出来
+            draw() {
+                // 生成0.5-1.2之间的范围
+                let scale = (Math.random() * 0.7) + 0.5;
+                // 保存一下当前画布状态
+                context.save();
+                // 绘制一条新的路径
+                context.beginPath();
+                // 画布偏移
+                context.translate(this.x, this.y);
+                context.scale(.7, .7);
+                // context.rotate(20 * Math.PI / 180);
+                context.moveTo(-10, 0); //长度20
+                context.lineTo(10, 0);
+
+                // 定义线条的粗细
+                context.lineWidth = 5;
+                // 定义线条两端的样式
+                context.lineCap = "round";
+                context.stroke();
+
+                // 正弦
+                // 度数=对边/斜边
+                // 对边 = 度数*斜边
+                // 使用Math.sin记得转成弧度
+                var disX = Math.sin(30 * Math.PI / 180) * 10;
+                var disY = Math.sin(60 * Math.PI / 180) * 10;
+                context.moveTo(-disX, -disY);
+                context.lineTo(disX, disY);
+                context.stroke();
+                context.moveTo(disX, -disY);
+                context.lineTo(-disX, disY);
+                // 定义线条的颜色
+                context.strokeStyle = `rgba(255,255,255,${this.opacity})`;
+                context.stroke();
+                context.restore();
+
+
+                this.change();
+            },
+            //全局样式变化等
+            change() {
+                // 全局透明度
+                // context.globalAlpha = this.opacity;
+
+
+
+                // ligter值的含义，当两者或者躲着重叠时，
+                // 重叠部分的颜色将两者颜色的值相加，得到的颜色最大取值是255，也就是结果是白色
+                context.globalCompositeOperation = "lighter";
+                this.run();
+            },
+            // 运动
+            run() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.opacity *= 0.98;
+            }
+        }
+        //渲染 ---利用h5新特性 不停的调用（相当于递归）实现运动！
+    function render() {
+        // 清除canvas里面的所有样式
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        arr.forEach(function(ele, val) {
+            ele.draw();
+            if (ele.opacity < 0.05) {
+                arr.splice(val, 1);
+            }
+        })
+        requestAnimationFrame(render); //自己调用自己
+        // h5关键帧动画，和浏览器刷新频率有关
+        // 不同的浏览器刷新次数不同，
+        // 如果是定时器，那就都相同
+    }
+    render();
+</script>
+
+</html>

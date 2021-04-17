@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+        
+        canvas {
+            background: #000;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="canvas"></canvas>
+    <script>
+        var canvas = document.querySelector("#canvas");
+        var context = canvas.getContext("2d");
+        var arr = [];
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        canvas.addEventListener("mousemove", function(event) {
+                console.log(event.clientX, event.clientY);
+                var circle = new Circle(event.clientX, event.clientY);
+                circle.draw();
+                arr.push(circle);
+            })
+            //颜色范围
+        function random(min, max) {
+            return Math.floor(Math.random() * (max - min) + min);
+        }
+
+        function Circle(x, y) {
+            this.x = x;
+            this.y = y;
+            //随机移动长度
+            this.vx = (Math.random() - 0.5) * 3;
+            this.vy = (Math.random() - 0.5) * 3;
+
+            this.color = "rgb(" + random(0, 255) + "," + random(0, 255) + "," + random(0, 255) + ")";
+
+            this.a = 1;
+        }
+
+        Circle.prototype = {
+                // 画canvas
+                draw: function() {
+                    context.beginPath();
+                    context.fillStyle = this.color;
+                    // 全局透明度
+                    context.globalAlpha = this.a;
+                    // 这个值与顺序无关，如果源与目标重叠，就将两者的颜色值想加。
+                    // 得到的颜色值的最大取值为255，结果就为白色
+                    context.globalCompositeOperation = "lighter";
+                    context.arc(this.x, this.y, 5, 0, Math.PI * 2);
+                    context.fill();
+
+                    this.update();
+                },
+                update: function() {
+                    this.x += this.vx;
+                    this.y += this.vy;
+                    this.a *= 0.98;
+                }
+            }
+            //渲染canvas 
+        function render() {
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            arr.forEach(function(ele, val) {
+                    ele.draw();
+
+                    if (ele.a < 0.05) {
+                        arr.splice(val, 1);
+                    }
+                })
+                // H5方法 ---->相当于递归
+            requestAnimationFrame(render);
+        }
+        render();
+    </script>
+</body>
+
+</html>

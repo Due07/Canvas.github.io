@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <script src="js/gaussBlur.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+        }
+        
+        canvas {
+            border: 1px solid gray;
+        }
+        
+        img {
+            border: 1px solid pink;
+        }
+        
+        #box {
+            width: 300px;
+            height: 300px;
+            border: 1px solid gray;
+            background-size: cover;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- <canvas id="canvas" width="500" height="500"></canvas> -->
+
+    <img src="" alt="">
+
+    <div id="box"></div>
+    <!-- <script>
+        var canvas = document.querySelector("#canvas");
+        var context = canvas.getContext("2d");
+
+        var img = new Image();
+        img.src = "1.jpg";
+        img.onload = function(){
+            // 画图         传参    三个，五个，九个
+            // context.drawImage(img,50,50);
+            // context.drawImage(img,50,50,400,400);
+            context.drawImage(img,340,170,100,100,0,0,400,400);
+
+            // 导出图片
+            var imgSrc = canvas.toDataURL();
+            console.log(imgSrc);
+            // DataURL，是一个地址
+            // http:     file:
+            // data协议 -----可以引入文本，可以引入html文档，也可以引入一些可以执行的js代码
+            // base64是一种编码格式，图片有一个地址，把地址编码，用64个字符来表示2进制的数据
+            var newImage = document.querySelector("img");
+            newImage.src = imgSrc;
+
+            // 操作像素 
+            // 两个方法，获取像素信息，添加像素信息
+            // 图片是由很多个1*1的像素块构成的
+            // 八百万像素：八百万个像素点
+            // 一千五百万像素：
+            // 获取像素信息
+            var pxInfo = context.getImageData(0,0,500,500);
+            console.log(pxInfo);
+
+            // 500*500=250000*4；
+            // 像素信息重新绘制到canvas当中
+            context.putImageData(pxInfo,50,50);     //大小是没办法控制
+            // 每一个像素点的rgba
+
+        }
+    </script> -->
+
+    <script>
+        // 高斯模糊
+        var img = new Image();
+        img.src = "1.jpg";
+        img.onload = function() {
+            window.player.blurImage(img, document.querySelector("#box"));
+        }
+    </script>
+</body>
+
+</html>
