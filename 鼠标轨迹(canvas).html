@@ -49,21 +49,22 @@
         this.vx = (Math.random() - 0.5) * 3;
         this.vy = (Math.random() - 0.5) * 3;
         this.opacity = 1;
+        this.scale = Math.random() + 0.2;
     }
     // Circle();
     Circle.prototype = {
             // 画出来
             draw() {
-                // 生成0.5-1.2之间的范围
-                let scale = (Math.random() * 0.7) + 0.5;
+                let rotate = Math.random() * 60;
+                let canLength = Math.random() * 10;
                 // 保存一下当前画布状态
                 context.save();
                 // 绘制一条新的路径
                 context.beginPath();
                 // 画布偏移
                 context.translate(this.x, this.y);
-                context.scale(.7, .7);
-                // context.rotate(20 * Math.PI / 180);
+                context.scale(this.scale, this.scale);
+                context.rotate(rotate * Math.PI / 60);
                 context.moveTo(-10, 0); //长度20
                 context.lineTo(10, 0);
 
